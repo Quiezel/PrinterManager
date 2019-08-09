@@ -56,13 +56,13 @@ public class PrinterService {
         this.impresora = impresora;
     }
     
-    public void configurarService(String impresora){
+    public void configurarImpresora(String impresora){
         setImpresora(impresora);
         pfm.definirConfiguracion(serviceName, impresora);
         pfm.Guardar("");
     }
 
-    public List<String> getPrinters() {
+    public static List<String> getPrinters() {
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;//
         PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
         PrintService printServices[] = PrintServiceLookup.lookupPrintServices(flavor, pras);
