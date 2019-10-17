@@ -111,21 +111,10 @@ public class Ticket implements Printable {
             Font fuente = linea.getFont();
             g2d.setFont(fuente);
             if (width < getStringWidth(g2d, linea)) {
-                //Haz algo
                 StringUtils.wrap(linea.getText(), g2d.getFontMetrics(linea.getFont()), (int)width)
                         .forEach(text -> {
                             wraped.add(linea.deriveLine(text));
                         });
-//                String[] palabras = linea.getText().split(" ");
-//                String nueva = "";
-//                for (String palabra : palabras) {
-//                    if ((nueva.trim().length() + palabra.length()) < width) {
-//                        nueva += " " + palabra;
-//                    } else {
-//                        wraped.add(linea.deriveLine(nueva.trim()));
-//                        nueva = "";
-//                    }
-//                }
             }else{
                 wraped.add(linea);
             }
