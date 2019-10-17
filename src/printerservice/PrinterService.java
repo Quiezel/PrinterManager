@@ -36,9 +36,14 @@ import propertiesfilemanager.PropertiesFileManager;
  * @author CREEDurango
  */
 public class PrinterService {
+
     private String serviceName;
     private PropertiesFileManager pfm;
     private String impresora;
+
+    public static byte[] centrar = {27, 97, 1};
+    public static byte[] izquierda = {27, 97, 0};
+    public static byte[] cutP = {0x1d, 'V', 1};
 
     public PrinterService(String serviceName, PropertiesFileManager pfm) {
         this.serviceName = serviceName;
@@ -55,8 +60,8 @@ public class PrinterService {
     public void setImpresora(String impresora) {
         this.impresora = impresora;
     }
-    
-    public void configurarImpresora(String impresora){
+
+    public void configurarImpresora(String impresora) {
         setImpresora(impresora);
         pfm.definirConfiguracion(serviceName, impresora);
         pfm.Guardar("");
@@ -105,7 +110,6 @@ public class PrinterService {
 //            Logger.getLogger(PrinterService.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
-    
     public void printString(String text) {
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
         PrintService service = PrintServiceLookup.lookupDefaultPrintService();
@@ -129,7 +133,7 @@ public class PrinterService {
      */
     public void imprimir(String texto, byte[] cutP) throws FileNotFoundException, IOException {
         printString(texto);
-        printBytes("EPSON TM-T20II Receipt", cutP);
+        printBytes(cutP);
         FileInputStream inputStream = new FileInputStream(texto);
         DocFlavor docFormat = DocFlavor.INPUT_STREAM.AUTOSENSE;
         PrintRequestAttributeSet attributeSet = new HashPrintRequestAttributeSet();
@@ -212,14 +216,14 @@ public class PrinterService {
         return PAGE_EXISTS;
     }
 
-    public void printBytes(String printerName, byte[] bytes) {
+    public void printBytes(byte[] bytes) {
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
 
         PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 
         PrintService printService[] = PrintServiceLookup.lookupPrintServices(
                 flavor, pras);
-        PrintService printer = EncuentraPrintService(printerName, printService);
+        PrintService printer = EncuentraPrintService(impresora, printService);
         DocPrintJob job = printer.createPrintJob();
         try {
 

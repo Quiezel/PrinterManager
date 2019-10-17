@@ -23,20 +23,20 @@ public class PrinterManager {
     private PrinterManager() {
         this.printers = new HashMap<>();
         this.pfm = new PropertiesFileManager("Impresoras");
-        pfm.Cargar();
-        pfm.obtenerLista().forEach(o -> addPrinter(o.toString()));
+        pfm.cargar();
+        pfm.obtenerLista().forEach(o -> loadPrinter(o.toString()));
     }
     
     public static PrinterManager getInstance(){
         return manager != null? manager : new PrinterManager();
     }
     
-    public void createService(String serviceName, String impresora){
+    public void createService(String serviceName){
         PrinterService ps = new PrinterService(serviceName, pfm);
-        ps.configurarImpresora(impresora);
+        printers.put(serviceName, ps);
     }
     
-    public void addPrinter(String serviceName){
+    public void loadPrinter(String serviceName){
         PrinterService ps = new PrinterService(serviceName, pfm);
         ps.setImpresora(pfm.obtenerPropiedad(serviceName, ""));
         printers.put(serviceName, ps);
