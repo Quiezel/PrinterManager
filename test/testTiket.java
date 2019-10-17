@@ -10,6 +10,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.OrientationRequested;
 import printerservice.PrinterManager;
 import printerservice.Ticket;
+import printerservice.Ticket.Alinear;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -225,8 +226,8 @@ public class testTiket extends javax.swing.JFrame {
         ticket = new Ticket();
     }//GEN-LAST:event_botonImprimirActionPerformed
 
-    private int alineamiento(){
-        return (rbc.isSelected()? 2 : (rbi.isSelected()? 1 : 0));
+    private Alinear alineamiento(){
+        return (rbc.isSelected()? Alinear.CENTRAR : (rbi.isSelected()? Alinear.IZQUIERDA : Alinear.DERECHA));
     }
     
     /**

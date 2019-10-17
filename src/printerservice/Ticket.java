@@ -21,6 +21,15 @@ import java.util.List;
  * @author CREEDurango
  */
 public class Ticket implements Printable {
+    public static enum Alinear{
+        DERECHA(0), IZQUIERDA(1), CENTRAR(2);
+        
+        private final int valor;
+
+        private Alinear(int alineamiento) {
+            this.valor = alineamiento;
+        }
+    }
 
     private List<Linea> lineas;
 
@@ -36,7 +45,7 @@ public class Ticket implements Printable {
         lineas.add(new Linea(texto, fuente));
     }
 
-    public void addLinea(String texto, Font fuente, int alinear) {
+    public void addLinea(String texto, Font fuente, Alinear alinear) {
         lineas.add(new Linea(texto, fuente, alinear));
     }
 
@@ -77,7 +86,7 @@ public class Ticket implements Printable {
             Font fuente = linea.getFont();
             g2d.setFont(fuente);
             posY += getStringHeight(g2d, linea);
-            g2d.drawString(linea.getText(), getAlineamiento(linea.alinear, getStringWidth(g2d, linea)), posY);
+            g2d.drawString(linea.getText(), getAlineamiento(linea.alinear.valor, getStringWidth(g2d, linea)), posY);
         }
         return PAGE_EXISTS;
     }
@@ -126,17 +135,17 @@ public class Ticket implements Printable {
 
         private String texto;
         private Font fuente;
-        private int alinear;
+        private Alinear alinear;
 
         public Linea(String texto) {
             this(texto, new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         }
 
         public Linea(String texto, Font fuente) {
-            this(texto, fuente, 0);
+            this(texto, fuente, Alinear.DERECHA);
         }
 
-        public Linea(String texto, Font fuente, int alinear) {
+        public Linea(String texto, Font fuente, Alinear alinear) {
             this.texto = texto;
             this.fuente = fuente;
             this.alinear = alinear;
@@ -150,7 +159,7 @@ public class Ticket implements Printable {
             return texto;
         }
 
-        public int getAlinear() {
+        public Alinear getAlinear() {
             return alinear;
         }
         
