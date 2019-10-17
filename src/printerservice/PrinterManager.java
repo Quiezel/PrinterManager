@@ -48,7 +48,11 @@ public class PrinterManager {
     }
     
     public PrinterService getPrinterService(String service){
-        return printers.get(service);
+        PrinterService ps = printers.get(service);
+        if (ps == null) {
+            ps = this.createService(service);
+        }
+        return ps;
     }
     
     

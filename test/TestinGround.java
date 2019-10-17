@@ -84,10 +84,6 @@ public class TestinGround {
             return;
         }
         int indexImpresora = Integer.parseInt(input);
-        if (pm.getPrinterService(IMPRESORA) == null) {
-            System.out.println("creando");
-            pm.createService(IMPRESORA);
-        }
         PrinterService ps = pm.getPrinterService(IMPRESORA);
         ps.configurarImpresora(impresoras.get(indexImpresora));
     }
