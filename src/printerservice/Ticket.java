@@ -21,15 +21,18 @@ import java.util.List;
  * @author CREEDurango
  */
 public class Ticket implements Printable {
-    public static enum Alinear{
+
+    public static enum Alinear {
         DERECHA(0), IZQUIERDA(1), CENTRAR(2);
-        
+
         private final int valor;
 
         private Alinear(int alineamiento) {
             this.valor = alineamiento;
         }
     }
+    
+    private Font defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
 
     private List<Linea> lineas;
 
@@ -43,6 +46,10 @@ public class Ticket implements Printable {
 
     public void addLinea(String texto, Font fuente) {
         lineas.add(new Linea(texto, fuente));
+    }
+
+    public void addLinea(String texto, Alinear alinear) {
+        lineas.add(new Linea(texto, alinear));
     }
 
     public void addLinea(String texto, Font fuente, Alinear alinear) {
@@ -60,7 +67,6 @@ public class Ticket implements Printable {
         double topMargin = 0;
         double bottomMargin = 0.01;
         int resolucion = 72;
-        
 
         paper.setSize(paperWidth * resolucion, paperHeight * resolucion);
         paper.setImageableArea(leftMargin * resolucion, topMargin * resolucion,
@@ -69,6 +75,10 @@ public class Ticket implements Printable {
 
         format.setPaper(paper);
         return format;
+    }
+
+    public void setDefaultFont(Font defaultFont) {
+        this.defaultFont = defaultFont;
     }
 
     @Override
@@ -90,29 +100,29 @@ public class Ticket implements Printable {
         }
         return PAGE_EXISTS;
     }
-    
-    private int getStringHeight(Graphics2D g2d, Linea l){
+
+    private int getStringHeight(Graphics2D g2d, Linea l) {
         FontMetrics fm = g2d.getFontMetrics(l.getFont());
         return fm.getAscent() - fm.getDescent() + fm.getLeading() + 5;// El 5 es la distancia minima entre lineas
     }
-    
-    private int getStringWidth(Graphics2D g2d, Linea l){
+
+    private int getStringWidth(Graphics2D g2d, Linea l) {
         FontMetrics fm = g2d.getFontMetrics(l.getFont());
         return fm.stringWidth(l.getText());
     }
-    
-    private int getAlineamiento(int alinear , int stringWidth){
+
+    private int getAlineamiento(int alinear, int stringWidth) {
         int posX = 0;
         if (alinear > 0) {
             posX = (int) getPageFormat().getImageableWidth() - stringWidth;
         }
         if (alinear > 1) {
-            posX = posX/2;
+            posX = posX / 2;
         }
         return posX;
     }
-    
-    private List<Linea> wrapText(List<Linea> lineas , Graphics2D g2d){
+
+    private List<Linea> wrapText(List<Linea> lineas, Graphics2D g2d) {
         List<Linea> wraped = new ArrayList<>();
         double width = getPageFormat().getImageableWidth();
         for (int i = 0; i < lineas.size(); i++) {
@@ -120,17 +130,17 @@ public class Ticket implements Printable {
             Font fuente = linea.getFont();
             g2d.setFont(fuente);
             if (width < getStringWidth(g2d, linea)) {
-                StringUtils.wrap(linea.getText(), g2d.getFontMetrics(linea.getFont()), (int)width)
+                StringUtils.wrap(linea.getText(), g2d.getFontMetrics(linea.getFont()), (int) width)
                         .forEach(text -> {
                             wraped.add(linea.deriveLine(text));
                         });
-            }else{
+            } else {
                 wraped.add(linea);
             }
         }
         return wraped;
     }
-    
+
     private class Linea {
 
         private String texto;
@@ -138,11 +148,15 @@ public class Ticket implements Printable {
         private Alinear alinear;
 
         public Linea(String texto) {
-            this(texto, new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+            this(texto, defaultFont);
         }
 
         public Linea(String texto, Font fuente) {
             this(texto, fuente, Alinear.DERECHA);
+        }
+
+        public Linea(String texto, Alinear alinear) {
+            this(texto, defaultFont, alinear);
         }
 
         public Linea(String texto, Font fuente, Alinear alinear) {
@@ -162,8 +176,8 @@ public class Ticket implements Printable {
         public Alinear getAlinear() {
             return alinear;
         }
-        
-        public Linea deriveLine(String texto){
+
+        public Linea deriveLine(String texto) {
             return new Linea(texto, fuente, alinear);
         }
 
