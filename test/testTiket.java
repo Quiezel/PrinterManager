@@ -1,13 +1,5 @@
 
 import java.awt.Font;
-import java.awt.print.PageFormat;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.OrientationRequested;
 import printerservice.PrinterManager;
 import printerservice.Ticket;
 import printerservice.Ticket.Alinear;
@@ -213,16 +205,7 @@ public class testTiket extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAgregarLineaActionPerformed
 
     private void botonImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonImprimirActionPerformed
-        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-        aset.add(OrientationRequested.PORTRAIT);
-        PrinterJob njob = PrinterJob.getPrinterJob();
-        PageFormat format = njob.validatePage(ticket.getPageFormat());
-        njob.setPrintable(ticket, format);
-        try {
-            njob.print();
-        } catch (PrinterException ex) {
-            Logger.getLogger(testTiket.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        pm.getPrinterService(IMPRESORA).printTicket(ticket);
         ticket = new Ticket();
     }//GEN-LAST:event_botonImprimirActionPerformed
 

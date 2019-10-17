@@ -12,6 +12,7 @@ import java.awt.print.PageFormat;
 import static java.awt.print.Printable.NO_SUCH_PAGE;
 import static java.awt.print.Printable.PAGE_EXISTS;
 import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.OrientationRequested;
 import propertiesfilemanager.PropertiesFileManager;
 
 /**
@@ -78,38 +80,7 @@ public class PrinterService {
         }
         return printerList;
     }
-
-//        public void printString(String archivo) {
-//        FileInputStream inputStream; //
-//        try {
-//            inputStream = new FileInputStream(archivo);//LOCALIZA EL ARCHIVO EN FORMATO TXT// 
-//            DocFlavor docFormat = DocFlavor.INPUT_STREAM.AUTOSENSE;// FORMATO DE DOCUMENTO
-//            DocFlavor arreglo;// DE FORMATO de arreglo
-//            arreglo = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-//            PrintRequestAttributeSet attributeSet = new HashPrintRequestAttributeSet();
-//            // CONFIGURACION DE ATRIBUTOS: DE SOLICITUD DE RESPUESTA DE IMPRESORA
-////        attributeSet.add(MediaSizeName.NA_LETTER);
-//            PrintService defaultPrintService
-//                    = PrintServiceLookup.lookupDefaultPrintService();
-//            //BUSCA LA IMPRESORA POR DEFECTO, SERVICIO DE IMPRESION POR DEFECTO 
-//
-//            if (defaultPrintService != null) {//SI EXISTE SERVICIO DE IMPRESORA POR DEFAULT
-//                Doc document = new SimpleDoc(inputStream, docFormat, null);//CREA UN DOCUMENTO SIMPLE CON FORMATO DE ENTRADA DE STREAM, 
-//                //y el contenido del archivo "impresion.txt" QUE SERÁ IMPRESO DESPUES
-//                DocPrintJob printJob = defaultPrintService.createPrintJob();
-//                try {
-//                    printJob.print(document, null); //IMPRIMe UN DOCUMENTO en EL TRABAJO DE IMPRESIÓN (impresora porfault) con atributos
-//                } catch (PrintException ex) {
-//                    Logger.getLogger(PrinterService.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                inputStream.close();
-//            }
-//        } catch (FileNotFoundException ex) {
-//            Logger.getLogger(PrinterService.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(PrinterService.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+    
     public void printString(String text) {
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
         PrintService service = PrintServiceLookup.lookupDefaultPrintService();
@@ -186,44 +157,29 @@ public class PrinterService {
             }
         }
     }
-
-    /**
-     *
-     * @param g
-     * @param pf
-     * @param page
-     * @return
-     * @throws PrinterException
-     */
-    public int print(Graphics g, PageFormat pf, int page)
-            throws PrinterException {
-        if (page > 0) {
-            /* We have only one page, and 'page' is zero-based */
-            return NO_SUCH_PAGE;
+    
+    public void printTicket(Ticket ticket){
+        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        aset.add(OrientationRequested.PORTRAIT);
+        PrinterJob njob = PrinterJob.getPrinterJob();
+        try {
+            njob.setPrintService(getPrintService());
+        } catch (PrinterException ex) {
+            Logger.getLogger(PrinterService.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        /*
-		 * User (0,0) is typically outside the imageable area, so we must
-		 * translate by the X and Y values in the PageFormat to avoid clipping
-         */
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.translate(pf.getImageableX(), pf.getImageableY());
-        /* Now we perform our rendering */
-
-        g.setFont(new Font("Roman", 0, 8));
-        g.drawString("Hello world !", 0, 10);
-
-        return PAGE_EXISTS;
+        PageFormat format = njob.validatePage(ticket.getPageFormat());
+        njob.setPrintable(ticket, format);
+        try {
+            njob.print();
+        } catch (PrinterException ex) {
+            Logger.getLogger(PrinterService.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void printBytes(byte[] bytes) {
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-
         PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
-
-        PrintService printService[] = PrintServiceLookup.lookupPrintServices(
-                flavor, pras);
-        PrintService printer = EncuentraPrintService(impresora, printService);
+        PrintService printer = getPrintService();
         DocPrintJob job = printer.createPrintJob();
         try {
 
@@ -237,11 +193,15 @@ public class PrinterService {
     }
 
     //encuentra la impresora especificada (printerName) dentro de los servicios de impresión capaces de imprimir el archivo
-    //Parametros: Nombre de la impresora, Una matriz con el nombre de la impresoras buscada
-    private PrintService EncuentraPrintService(String printerName, PrintService[] servicios) {
+    //Parametros: Nombre de la impresora, Una matriz con el nombre de la impresoras buscada    
+    private PrintService getPrintService(){
+        DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
+        PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
+        PrintService[]  servicios = PrintServiceLookup.lookupPrintServices(
+                flavor, pras);
 
         for (PrintService service : servicios) {
-            if (service.getName().equalsIgnoreCase(printerName)) {
+            if (service.getName().equalsIgnoreCase(impresora)) {
                 return service;
             }
         }
