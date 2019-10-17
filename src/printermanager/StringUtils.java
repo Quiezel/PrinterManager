@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package printerservice;
+package printermanager;
 
 import java.awt.FontMetrics;
 import java.util.ArrayList;

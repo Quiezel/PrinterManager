@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import printerservice.PrinterManager;
-import printerservice.PrinterService;
+import printermanager.PrinterManager;
+import printermanager.PrinterService;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

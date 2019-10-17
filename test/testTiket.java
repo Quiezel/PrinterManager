@@ -1,8 +1,8 @@
 
 import java.awt.Font;
-import printerservice.PrinterManager;
-import printerservice.Ticket;
-import printerservice.Ticket.Alinear;
+import printermanager.PrinterManager;
+import printermanager.Ticket;
+import printermanager.Ticket.Alinear;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
