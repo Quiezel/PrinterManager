@@ -14,6 +14,8 @@ import java.util.List;
  * Globally available utility classes, mostly for string manipulation.
  * 
  * @author Jim Menard, <a href="mailto:jimm@io.com">jimm@io.com</a>
+ * @see https://stackoverflow.com/questions/12129633/how-do-i-render-wrapped-text-on-an-image-in-java
+ * @see http://www.java2s.com/Code/Java/2D-Graphics-GUI/WrapstringaccordingtoFontMetrics.htm
  */
 public class StringUtils {
   /**
