@@ -31,9 +31,10 @@ public class PrinterManager {
         return manager != null? manager : new PrinterManager();
     }
     
-    public void createService(String serviceName){
+    public PrinterService createService(String serviceName){
         PrinterService ps = new PrinterService(serviceName, pfm);
         printers.put(serviceName, ps);
+        return ps;
     }
     
     public void loadPrinter(String serviceName){
