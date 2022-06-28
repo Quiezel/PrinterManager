@@ -17,8 +17,8 @@ import propertiesfilemanager.PropertiesFileManager;
  */
 public class PrinterManager {
     private static PrinterManager manager;
-    private Map<String, PrinterService> printers;
-    private PropertiesFileManager pfm;
+    private final Map<String, PrinterService> printers;
+    private final PropertiesFileManager pfm;
 
     private PrinterManager() {
         this.printers = new HashMap<>();
@@ -31,7 +31,7 @@ public class PrinterManager {
         return manager != null? manager : new PrinterManager();
     }
     
-    public PrinterService createService(String serviceName){
+    private PrinterService createService(String serviceName){
         PrinterService ps = new PrinterService(serviceName, pfm);
         printers.put(serviceName, ps);
         return ps;
